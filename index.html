@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Usage Tracker · USGBC-CA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #F4F8F5;
+      --surface:   #FFFFFF;
+      --surface2:  #EEF4F0;
+      --border:    #D0E4D8;
+      --green:     #1D9E75;
+      --green-dk:  #0F6E56;
+      --amber:     #C07A15;
+      --blue:      #2F7EB5;
+      --text:      #182E22;
+      --text2:     #4A6A52;
+      --text3:     #7A9A82;
+      --warn-bg:   #FFF8E7;
+      --warn-bdr:  #EFC97A;
+      --warn-txt:  #7A5500;
+      --ok-bg:     #E6F5EF;
+      --ok-bdr:    #7ACFAC;
+      --ok-txt:    #0F6E56;
+      --radius:    10px;
+      --radius-lg: 14px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:       #0D1C12;
+        --surface:  #132018;
+        --surface2: #1A2D20;
+        --border:   #1F3A28;
+        --text:     #EFF5F1;
+        --text2:    #8BAF8F;
+        --text3:    #4A6A52;
+        --warn-bg:  #2A2000;
+        --warn-bdr: #6A5000;
+        --warn-txt: #D4A840;
+        --ok-bg:    #0A2015;
+        --ok-bdr:   #1A6040;
+        --ok-txt:   #4DCFA0;
+      }
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+    }
+
+    .wrap { max-width: 520px; margin: 0 auto; }
+
+    /* Header */
+    .header { margin-bottom: 24px; }
+    .header-eyebrow {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 500; letter-spacing: 1.5px;
+      color: var(--green); text-transform: uppercase; margin-bottom: 4px;
+    }
+    .header-eyebrow svg { width: 14px; height: 14px; fill: var(--green); }
+    .header h1 { font-size: 22px; font-weight: 500; color: var(--text); }
+    .header p { font-size: 13px; color: var(--text2); margin-top: 4px; line-height: 1.5; }
+
+    /* Warning banner */
+    .banner {
+      display: flex; gap: 10px; align-items: flex-start;
+      background: var(--warn-bg); border: 1px solid var(--warn-bdr);
+      border-radius: var(--radius); padding: 10px 14px;
+      font-size: 12px; color: var(--warn-txt); line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .banner svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; fill: var(--warn-txt); }
+
+    /* Card */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 20px; margin-bottom: 12px;
+    }
+
+    /* Gauge + totals row */
+    .gauge-row { display: flex; gap: 20px; align-items: center; }
+    .gauge-wrap { flex-shrink: 0; }
+    .totals { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+    .stat-label { font-size: 11px; color: var(--text3); margin-bottom: 2px; }
+    .stat-value { font-size: 21px; font-weight: 500; line-height: 1; }
+    .stat-value span { font-size: 12px; font-weight: 400; color: var(--text3); margin-left: 3px; }
+    .stat-ctx { font-size: 11px; color: var(--text3); margin-top: 2px; }
+    .green { color: var(--green); }
+    .amber { color: var(--amber); }
+    .blue  { color: var(--blue); }
+
+    /* Per-prompt mini cards */
+    .mini-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+    .mini-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 12px; text-align: center;
+    }
+    .mini-card .mini-label { font-size: 10px; color: var(--text3); margin-bottom: 4px; }
+    .mini-card .mini-val { font-size: 16px; font-weight: 500; color: var(--text); }
+    .mini-card .mini-unit { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+    /* Log input area */
+    .log-hint { font-size: 13px; color: var(--text2); margin-bottom: 10px; line-height: 1.5; }
+    input[type="text"] {
+      width: 100%; padding: 10px 12px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius); font-size: 13px; color: var(--text);
+      font-family: inherit; outline: none; margin-bottom: 10px;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus { border-color: var(--green); }
+    input[type="text"]::placeholder { color: var(--text3); }
+
+    button {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; padding: 11px 16px;
+      background: var(--green); color: #fff;
+      border: none; border-radius: var(--radius);
+      font-size: 13px; font-weight: 500; font-family: inherit;
+      cursor: pointer; transition: background 0.2s, transform 0.1s;
+    }
+    button:hover { background: var(--green-dk); }
+    button:active { transform: scale(0.98); }
+    button.success {
+      background: var(--ok-bg); color: var(--ok-txt);
+      border: 1px solid var(--ok-bdr);
+    }
+    button svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
+
+    /* Log section */
+    .log-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px;
+    }
+    .log-header span { font-size: 12px; color: var(--text3); }
+    .clear-btn {
+      background: none; border: 1px solid var(--border); color: var(--text3);
+      font-size: 11px; padding: 4px 10px; border-radius: 6px; width: auto;
+    }
+    .clear-btn:hover { background: var(--surface2); color: var(--text2); }
+
+    .log-entries { display: flex; flex-direction: column; gap: 6px; }
+    .log-entry {
+      display: flex; gap: 10px; align-items: flex-start;
+      padding: 8px 10px; background: var(--surface2);
+      border-radius: 8px;
+    }
+    .log-time { font-size: 11px; color: var(--text3); white-space: nowrap; margin-top: 1px; }
+    .log-note { font-size: 13px; line-height: 1.4; }
+    .log-more { font-size: 11px; color: var(--text3); text-align: center; padding: 6px 0; }
+
+    /* Footer */
+    .footer {
+      font-size: 11px; color: var(--text3); line-height: 1.7;
+      border-top: 1px solid var(--border); padding-top: 16px; margin-top: 4px;
+    }
+    .footer strong { color: var(--text2); font-weight: 500; }
+
+    @media (max-width: 400px) {
+      .gauge-wrap svg { width: 100px; height: 100px; }
+      .stat-value { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="header-eyebrow">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-.9C7.31 20.4 8.41 19.3 10 19c2.5-.5 3.5 1 5 1 3 0 5-2 5-5 0-4-3-7-3-7z"/>
+      </svg>
+      USGBC-CA
+    </div>
+    <h1>AI usage tracker</h1>
+    <p>Log each AI prompt your team sends. Track intentional use.</p>
+  </div>
+
+  <div class="banner">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2L1 21h22L12 2zm0 3.5L20.5 19h-17L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/>
+    </svg>
+    <span>Estimates only — based on published research averages, not real server data. For awareness, not accounting.</span>
+  </div>
+
+  <!-- Gauge + totals -->
+  <div class="card">
+    <div class="gauge-row">
+      <div class="gauge-wrap">
+        <svg id="gauge-svg" width="120" height="120" viewBox="0 0 120 120"
+          role="img" aria-label="Circular gauge showing number of AI prompts logged this session">
+          <title>AI prompt usage gauge</title>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#D0E4D8" stroke-width="7"/>
+          <circle id="gauge-arc" cx="60" cy="60" r="50"
+            fill="none" stroke="#1D9E75" stroke-width="7"
+            stroke-dasharray="314.16" stroke-dashoffset="314.16"
+            stroke-linecap="round" transform="rotate(-90 60 60)"
+            style="transition:stroke-dashoffset 0.6s ease,stroke 0.6s ease"/>
+          <text id="g-count" x="60" y="55" text-anchor="middle"
+            font-size="30" font-weight="500"
+            font-family="Inter, sans-serif" fill="#182E22">0</text>
+          <text id="g-sub" x="60" y="74" text-anchor="middle"
+            font-size="11" font-family="Inter, sans-serif" fill="#7A9A82">prompts</text>
+        </svg>
+      </div>
+
+      <div class="totals">
+        <div>
+          <div class="stat-label">Energy used</div>
+          <div class="stat-value green"><span id="energy-val">0.00</span><span>Wh</span></div>
+          <div class="stat-ctx" id="energy-ctx">LED bulb for 0 min</div>
+        </div>
+        <div>
+          <div class="stat-label">CO₂ equivalent</div>
+          <div class="stat-value amber"><span id="co2-val">0.0</span><span>g</span></div>
+          <div class="stat-ctx" id="co2-ctx">≈ 0m in a gas car</div>
+        </div>
+        <div>
+          <div class="stat-label">Water (cooling est.)</div>
+          <div class="stat-value blue"><span id="water-val">0</span><span>ml</span></div>
+          <div class="stat-ctx" id="water-ctx">0.00 cups of water</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Per-prompt reference -->
+  <div class="mini-grid">
+    <div class="mini-card">
+      <div class="mini-label">Per prompt</div>
+      <div class="mini-val">2 Wh</div>
+      <div class="mini-unit">energy</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-label">Per prompt</div>
+      <div class="mini-val">0.8 g</div>
+      <div class="mini-unit">CO₂</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-label">Per prompt</div>
+      <div class="mini-val">10 ml</div>
+      <div class="mini-unit">water</div>
+    </div>
+  </div>
+
+  <!-- Log a prompt -->
+  <div class="card">
+    <p class="log-hint">After each AI prompt you send, log it here. Adding a reason helps you track intentional use over time.</p>
+    <input type="text" id="note-input"
+      placeholder="Why did you use AI for this? (optional)"
+      onkeydown="if(event.key==='Enter') logPrompt()"/>
+    <button id="log-btn" onclick="logPrompt()">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-.9C7.31 20.4 8.41 19.3 10 19c2.5-.5 3.5 1 5 1 3 0 5-2 5-5 0-4-3-7-3-7z"/>
+      </svg>
+      Log this prompt
+    </button>
+  </div>
+
+  <!-- Recent log -->
+  <div class="card" id="log-section" style="display:none">
+    <div class="log-header">
+      <span>Recent prompts</span>
+      <button class="clear-btn" onclick="clearLog()">Clear all</button>
+    </div>
+    <div class="log-entries" id="log-entries"></div>
+  </div>
+
+  <div class="footer">
+    <strong>Methodology:</strong> ~0.002 kWh per query (Goldman Sachs AI energy research, 2024),
+    US average grid intensity ~0.4 kg CO₂/kWh, ~10ml water per query for data center cooling.
+    Real figures vary significantly by model, hardware, and data center energy source.
+    This tracker is for awareness — not accounting.
+  </div>
+
+</div>
+
+<script>
+  const PER = { energy_wh: 2, co2_g: 0.8, water_ml: 10 };
+  const MAX_GAUGE = 50;
+  const STORAGE_KEY = 'usgbc-ai-env-log';
+  let prompts = [];
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) prompts = JSON.parse(raw);
+    } catch(e) {}
+    render();
+  }
+
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(prompts)); } catch(e) {}
+  }
+
+  function logPrompt() {
+    const input = document.getElementById('note-input');
+    const note = input.value.trim();
+    prompts.push({
+      id: Date.now(),
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      date: new Date().toLocaleDateString(),
+      note: note || null
+    });
+    input.value = '';
+    const btn = document.getElementById('log-btn');
+    btn.classList.add('success');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:16px;height:16px;fill:currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Logged';
+    setTimeout(() => {
+      btn.classList.remove('success');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:16px;height:16px;fill:currentColor"><path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-.9C7.31 20.4 8.41 19.3 10 19c2.5-.5 3.5 1 5 1 3 0 5-2 5-5 0-4-3-7-3-7z"/></svg> Log this prompt';
+    }, 1500);
+    save();
+    render();
+  }
+
+  function clearLog() {
+    if (!confirm('Clear all logged prompts? This cannot be undone.')) return;
+    prompts = [];
+    save();
+    render();
+  }
+
+  function render() {
+    const n = prompts.length;
+    const energy = n * PER.energy_wh;
+    const co2    = n * PER.co2_g;
+    const water  = n * PER.water_ml;
+
+    // Gauge arc
+    const arc  = document.getElementById('gauge-arc');
+    const pct  = Math.min(n / MAX_GAUGE, 1);
+    const circ = 2 * Math.PI * 50;
+    arc.setAttribute('stroke-dashoffset', (circ * (1 - pct)).toFixed(2));
+    const hue = Math.max(28, 155 - Math.round(pct * 127));
+    arc.setAttribute('stroke', `hsl(${hue}, 58%, 40%)`);
+
+    // Gauge text — update fill for dark mode
+    const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.getElementById('g-count').setAttribute('fill', dark ? '#EFF5F1' : '#182E22');
+    document.getElementById('g-sub').setAttribute('fill', dark ? '#4A6A52' : '#7A9A82');
+    document.getElementById('g-count').textContent = n;
+
+    // Totals
+    document.getElementById('energy-val').textContent = energy.toFixed(2);
+    document.getElementById('co2-val').textContent    = co2.toFixed(1);
+    document.getElementById('water-val').textContent  = water;
+
+    // Contexts
+    const ledMin = Math.round(energy * 6);
+    const carM   = Math.round(co2 / 0.12);
+    const cups   = (water / 240).toFixed(2);
+    document.getElementById('energy-ctx').textContent = `LED bulb for ${ledMin} min`;
+    document.getElementById('co2-ctx').textContent    = `≈ ${carM}m in a gas car`;
+    document.getElementById('water-ctx').textContent  = `${cups} cups of water`;
+
+    // Log section
+    const section = document.getElementById('log-section');
+    const entries = document.getElementById('log-entries');
+    if (n > 0) {
+      section.style.display = 'block';
+      const recent = [...prompts].reverse().slice(0, 7);
+      entries.innerHTML = recent.map(p => `
+        <div class="log-entry">
+          <span class="log-time">${p.time}</span>
+          <span class="log-note" style="color:${p.note ? 'var(--text)' : 'var(--text3)'}">
+            ${p.note ? escHtml(p.note) : 'No reason noted'}
+          </span>
+        </div>`).join('');
+      if (n > 7) {
+        entries.innerHTML += `<div class="log-more">+ ${n - 7} more saved in your browser</div>`;
+      }
+    } else {
+      section.style.display = 'none';
+    }
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // Re-render on dark mode change so SVG text colors update
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', render);
+
+  load();
+</script>
+</body>
+</html>
