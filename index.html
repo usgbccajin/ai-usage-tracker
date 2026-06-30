@@ -16,6 +16,9 @@
       --border:    #D0E4D8;
       --green:     #1D9E75;
       --green-dk:  #0F6E56;
+      --green-bar: #5DC49A;
+      --amber-bar: #E8A44A;
+      --red-bar:   #C05C4A;
       --amber:     #C07A15;
       --blue:      #2F7EB5;
       --text:      #182E22;
@@ -33,28 +36,29 @@
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg:       #0D1C12;
-        --surface:  #132018;
-        --surface2: #1A2D20;
-        --border:   #1F3A28;
-        --text:     #EFF5F1;
-        --text2:    #8BAF8F;
-        --text3:    #6A8A72;
-        --warn-bg:  #2A2000;
-        --warn-bdr: #6A5000;
-        --warn-txt: #D4A840;
-        --ok-bg:    #0A2015;
-        --ok-bdr:   #1A6040;
-        --ok-txt:   #4DCFA0;
+        --bg:        #0D1C12;
+        --surface:   #132018;
+        --surface2:  #1A2D20;
+        --border:    #1F3A28;
+        --green-bar: #3DAA78;
+        --amber-bar: #C4883A;
+        --red-bar:   #A04A3A;
+        --text:      #EFF5F1;
+        --text2:     #8BAF8F;
+        --text3:     #6A8A72;
+        --warn-bg:   #2A2000;
+        --warn-bdr:  #6A5000;
+        --warn-txt:  #D4A840;
+        --ok-bg:     #0A2015;
+        --ok-bdr:    #1A6040;
+        --ok-txt:    #4DCFA0;
       }
     }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 24px 16px 48px;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; padding: 24px 16px 48px;
     }
 
     .wrap { max-width: 520px; margin: 0 auto; }
@@ -73,8 +77,7 @@
       display: flex; gap: 10px; align-items: flex-start;
       background: var(--warn-bg); border: 1px solid var(--warn-bdr);
       border-radius: var(--radius); padding: 10px 14px;
-      font-size: 12px; color: var(--warn-txt); line-height: 1.5;
-      margin-bottom: 16px;
+      font-size: 12px; color: var(--warn-txt); line-height: 1.5; margin-bottom: 16px;
     }
     .banner svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; fill: var(--warn-txt); }
 
@@ -83,34 +86,30 @@
       border-radius: var(--radius-lg); padding: 20px; margin-bottom: 12px;
     }
 
-    /* Complexity selector */
+    /* Complexity */
     .complexity-label {
       font-size: 11px; color: var(--text2); margin-bottom: 8px;
       display: flex; align-items: center; gap: 6px;
     }
     .complexity-label strong { color: var(--text); font-weight: 500; font-size: 12px; }
-    .complexity-selector {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 6px; margin-bottom: 6px;
-    }
+    .complexity-selector { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-bottom: 6px; }
     .cx-btn {
       padding: 9px 6px; font-size: 12px; font-weight: 500;
       background: var(--surface2); border: 1px solid var(--border);
       border-radius: var(--radius); color: var(--text2);
-      cursor: pointer; transition: all 0.15s; text-align: center;
-      font-family: inherit; line-height: 1.3;
+      cursor: pointer; transition: all 0.15s; text-align: center; font-family: inherit; line-height: 1.3;
     }
     .cx-btn .cx-name { display: block; }
     .cx-btn .cx-hint { display: block; font-size: 10px; font-weight: 400; margin-top: 2px; opacity: 0.75; }
     .cx-btn:hover { border-color: var(--green); color: var(--text); }
-    .cx-btn.active {
-      background: var(--green); border-color: var(--green); color: #fff;
-    }
+    .cx-btn.active { color: #fff; }
     .cx-btn.active .cx-hint { opacity: 0.85; }
+    #cx-simple.active   { background: var(--green-bar);  border-color: var(--green-dk); }
+    #cx-moderate.active { background: var(--amber-bar);  border-color: #A06020; }
+    #cx-complex.active  { background: var(--red-bar);    border-color: #803020; }
     .cx-insight {
       font-size: 11px; color: var(--text2); line-height: 1.5;
-      padding: 8px 10px; background: var(--surface2);
-      border-radius: 8px; margin-bottom: 18px;
+      padding: 8px 10px; background: var(--surface2); border-radius: 8px; margin-bottom: 18px;
     }
     .cx-insight span { color: var(--green); font-weight: 500; }
 
@@ -121,13 +120,13 @@
     .stat-label { font-size: 11px; color: var(--text2); margin-bottom: 2px; }
     .stat-value { font-size: 21px; font-weight: 500; line-height: 1; }
     .stat-value span { font-size: 12px; font-weight: 400; color: var(--text2); margin-left: 3px; }
-    .stat-ctx { font-size: 12px; color: var(--text2); margin-top: 2px; }
+    .stat-ctx { font-size: 13px; color: var(--text); font-weight: 500; margin-top: 3px; }
     .green { color: var(--green); }
     .amber { color: var(--amber); }
     .blue  { color: var(--blue); }
 
     /* Mini cards */
-    .mini-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+    .mini-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px; }
     .mini-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: var(--radius); padding: 12px; text-align: center;
@@ -136,14 +135,62 @@
     .mini-card .mini-val   { font-size: 15px; font-weight: 500; color: var(--text); }
     .mini-card .mini-unit  { font-size: 11px; color: var(--text2); margin-top: 2px; }
 
+    /* 7-day chart */
+    .chart-card { padding: 18px 20px; }
+    .chart-top {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
+    }
+    .chart-title { font-size: 12px; font-weight: 500; color: var(--text2); }
+    .chart-legend { display: flex; gap: 10px; align-items: center; }
+    .legend-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--text3); }
+    .legend-dot  { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+    .dot-simple   { background: var(--green-bar); }
+    .dot-moderate { background: var(--amber-bar); }
+    .dot-complex  { background: var(--red-bar); }
+
+    .chart-grid {
+      display: grid; grid-template-columns: repeat(7,1fr); gap: 6px;
+    }
+    .chart-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .chart-count {
+      font-size: 10px; font-weight: 500; color: var(--text2); min-height: 14px; line-height: 14px;
+    }
+    .chart-bar-wrap {
+      width: 100%; height: 80px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+    }
+    .chart-stack {
+      width: 100%; border-radius: 4px 4px 0 0; overflow: hidden;
+      display: flex; flex-direction: column-reverse;
+      min-height: 3px;
+      border: 1px solid transparent; border-bottom: none;
+    }
+    .chart-stack.empty {
+      background: var(--surface2); border-color: var(--border);
+    }
+    .chart-stack.future {
+      background: transparent; border-color: var(--border);
+      border-style: dashed;
+    }
+    .seg { width: 100%; flex-shrink: 0; }
+    .seg-simple   { background: var(--green-bar); }
+    .seg-moderate { background: var(--amber-bar); }
+    .seg-complex  { background: var(--red-bar); }
+
+    .chart-day-label {
+      text-align: center; font-size: 10px; color: var(--text3); line-height: 1.4;
+    }
+    .chart-day-label span { display: block; font-size: 9px; }
+    .chart-day-label.today { color: var(--green); font-weight: 500; }
+    .chart-day-label.future { color: var(--border); }
+
     /* Log */
     .log-hint { font-size: 13px; color: var(--text2); margin-bottom: 10px; line-height: 1.5; }
     input[type="text"] {
       width: 100%; padding: 10px 12px;
       background: var(--surface2); border: 1px solid var(--border);
       border-radius: var(--radius); font-size: 13px; color: var(--text);
-      font-family: inherit; outline: none; margin-bottom: 10px;
-      transition: border-color 0.2s;
+      font-family: inherit; outline: none; margin-bottom: 10px; transition: border-color 0.2s;
     }
     input[type="text"]:focus { border-color: var(--green); }
     input[type="text"]::placeholder { color: var(--text3); }
@@ -158,34 +205,28 @@
     }
     button.primary:hover  { background: var(--green-dk); }
     button.primary:active { transform: scale(0.98); }
-    button.primary.success {
-      background: var(--ok-bg); color: var(--ok-txt);
-      border: 1px solid var(--ok-bdr);
-    }
+    button.primary.success { background: var(--ok-bg); color: var(--ok-txt); border: 1px solid var(--ok-bdr); }
     button.primary svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
 
     .log-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 12px;
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
     }
     .log-header span { font-size: 12px; color: var(--text3); }
     .clear-btn {
       background: none; border: 1px solid var(--border); color: var(--text2);
-      font-size: 11px; padding: 4px 10px; border-radius: 6px;
-      cursor: pointer; font-family: inherit;
+      font-size: 11px; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-family: inherit;
     }
     .clear-btn:hover { background: var(--surface2); }
 
     .log-entries { display: flex; flex-direction: column; gap: 6px; }
     .log-entry {
-      display: flex; gap: 10px; align-items: flex-start;
+      display: flex; gap: 8px; align-items: flex-start;
       padding: 8px 10px; background: var(--surface2); border-radius: 8px;
     }
-    .log-time { font-size: 11px; color: var(--text3); white-space: nowrap; margin-top: 1px; }
+    .log-time { font-size: 11px; color: var(--text3); white-space: nowrap; margin-top: 1px; flex-shrink: 0; }
     .log-note { font-size: 13px; line-height: 1.4; flex: 1; }
-    .log-cx {
-      font-size: 10px; color: var(--text3);
-      white-space: nowrap; margin-top: 2px;
+    .log-cx-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px;
     }
     .log-more { font-size: 11px; color: var(--text3); text-align: center; padding: 6px 0; }
 
@@ -200,6 +241,7 @@
     @media (max-width: 400px) {
       .gauge-wrap svg { width: 100px; height: 100px; }
       .stat-value { font-size: 18px; }
+      .chart-legend { gap: 6px; }
     }
   </style>
 </head>
@@ -225,8 +267,6 @@
   </div>
 
   <div class="card">
-
-    <!-- Complexity selector -->
     <div class="complexity-label">
       <strong>How complex was this prompt?</strong>
       <span>— the biggest variable in AI energy use</span>
@@ -250,10 +290,9 @@
       more than any difference between AI models.
     </div>
 
-    <!-- Gauge + totals -->
     <div class="gauge-row">
       <div class="gauge-wrap">
-        <svg id="gauge-svg" width="120" height="120" viewBox="0 0 120 120"
+        <svg width="120" height="120" viewBox="0 0 120 120"
           role="img" aria-label="Circular gauge showing number of AI prompts logged">
           <title>Prompt usage gauge</title>
           <circle cx="60" cy="60" r="50" fill="none" stroke="#D0E4D8" stroke-width="7" opacity="0.5"/>
@@ -263,13 +302,11 @@
             stroke-linecap="round" transform="rotate(-90 60 60)"
             style="transition:stroke-dashoffset 0.6s ease,stroke 0.6s ease"/>
           <text id="g-count" x="60" y="55" text-anchor="middle"
-            font-size="30" font-weight="500"
-            font-family="Inter, sans-serif" fill="#182E22">0</text>
+            font-size="30" font-weight="500" font-family="Inter, sans-serif" fill="#182E22">0</text>
           <text id="g-sub" x="60" y="74" text-anchor="middle"
             font-size="11" font-family="Inter, sans-serif" fill="#7A9A82">prompts</text>
         </svg>
       </div>
-
       <div class="totals">
         <div>
           <div class="stat-label">Energy used</div>
@@ -279,7 +316,7 @@
         <div>
           <div class="stat-label">CO₂ equivalent</div>
           <div class="stat-value amber"><span id="co2-val">0.00</span><span>g</span></div>
-          <div class="stat-ctx" id="co2-ctx">≈ 0m in a gas car</div>
+          <div class="stat-ctx" id="co2-ctx">≈ 0 ft in a gas car</div>
         </div>
         <div>
           <div class="stat-label">Water (cooling est.)</div>
@@ -290,7 +327,6 @@
     </div>
   </div>
 
-  <!-- Per-prompt reference -->
   <div class="mini-grid">
     <div class="mini-card">
       <div class="mini-label">This prompt type</div>
@@ -309,9 +345,23 @@
     </div>
   </div>
 
-  <!-- Log a prompt -->
+  <!-- 7-day chart -->
+  <div class="card chart-card">
+    <div class="chart-top">
+      <div class="chart-title" id="chart-week-label">This week</div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot dot-simple"></div>Simple</div>
+        <div class="legend-item"><div class="legend-dot dot-moderate"></div>Moderate</div>
+        <div class="legend-item"><div class="legend-dot dot-complex"></div>Complex</div>
+      </div>
+    </div>
+    <div class="chart-grid" id="chart-bars"></div>
+    <div class="chart-grid" id="chart-labels" style="margin-top:6px"></div>
+  </div>
+
+  <!-- Log card -->
   <div class="card">
-    <p class="log-hint">After each AI prompt you send, log it here with the complexity level selected above. Adding a reason helps track intentional use over time.</p>
+    <p class="log-hint">After each AI prompt you send, log it here. Select the complexity above, add a reason if you'd like, then hit log.</p>
     <input type="text" id="note-input"
       placeholder="Why did you use AI for this? (optional)"
       onkeydown="if(event.key==='Enter') logPrompt()"/>
@@ -341,32 +391,36 @@
     No model-specific breakdown is shown — the goal is awareness of AI's collective
     footprint, not comparison between products.
     <br><br>
-    <strong>Complexity multipliers:</strong> Simple = baseline (0.30 Wh).
-    Moderate = 3× (0.90 Wh). Complex = 10× (3.0 Wh).
-    Based on research showing 10–50× variation by query depth
-    (Jegham et al., 2025; Li et al., 2025).
+    <strong>Complexity multipliers:</strong> Simple = baseline (0.30 Wh). Moderate = 3× (0.90 Wh). Complex = 10× (3.0 Wh).
+    Based on research showing 10–50× variation by query depth.
     <br><br>
     <strong>CO₂</strong> estimated using IEA 2025 global average grid intensity (0.43 gCO₂/kWh).
     <strong>Water</strong> estimated using industry midpoint cooling assumptions.
-    Both figures vary significantly by data center location and energy source.
+    Both vary significantly by data center location and energy source.
   </div>
 
 </div>
 
 <script>
   const COMPLEXITY = {
-    simple:   { energy_wh: 0.30, co2_g: 0.13, water_ml: 0.50,  label: 'Simple'   },
-    moderate: { energy_wh: 0.90, co2_g: 0.39, water_ml: 1.50,  label: 'Moderate' },
-    complex:  { energy_wh: 3.00, co2_g: 1.29, water_ml: 5.00,  label: 'Complex'  }
+    simple:   { energy_wh: 0.30, co2_g: 0.13, water_ml: 0.50, label: 'Simple'   },
+    moderate: { energy_wh: 0.90, co2_g: 0.39, water_ml: 1.50, label: 'Moderate' },
+    complex:  { energy_wh: 3.00, co2_g: 1.29, water_ml: 5.00, label: 'Complex'  }
   };
 
   const INSIGHTS = {
     simple:   'A simple prompt — quick lookup, one-line question. The lowest-footprint way to use AI.',
     moderate: 'A moderate prompt uses about <span>3×</span> more energy than a simple one. Think before you draft.',
-    complex:  'Complex prompts can use <span>10× or more</span> energy than simple ones — more than any difference between AI models.'
+    complex:  'Complex prompts can use <span>10×</span> or more energy than simple ones — more than any difference between AI models.'
   };
 
-  const STORAGE_KEY = 'usgbc-ai-env-log-v3';
+  // Bar colors (must match CSS vars but as hex for inline style)
+  const BAR_COLORS = { simple: '#5DC49A', moderate: '#E8A44A', complex: '#C05C4A' };
+  const CO2_PER_FOOT = 0.03657;
+  // Mon=0 ... Sun=6 ordering
+  const DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+  const STORAGE_KEY = 'usgbc-ai-env-log-v5';
   let prompts = [];
   let activeComplexity = 'simple';
 
@@ -374,9 +428,9 @@
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
-        const data = JSON.parse(raw);
-        prompts = data.prompts || [];
-        activeComplexity = data.complexity || 'simple';
+        const d = JSON.parse(raw);
+        prompts = d.prompts || [];
+        activeComplexity = d.complexity || 'simple';
       }
     } catch(e) {}
     updateComplexityUI();
@@ -384,11 +438,8 @@
   }
 
   function save() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        prompts, complexity: activeComplexity
-      }));
-    } catch(e) {}
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ prompts, complexity: activeComplexity })); }
+    catch(e) {}
   }
 
   function setComplexity(key) {
@@ -423,10 +474,12 @@
       energy_wh:  c.energy_wh,
       co2_g:      c.co2_g,
       water_ml:   c.water_ml,
+      date:       dateKey(new Date()),
       time:       new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       note:       note || null
     });
     input.value = '';
+
     const btn = document.getElementById('log-btn');
     btn.classList.add('success');
     btn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:16px;height:16px;fill:currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Logged';
@@ -445,11 +498,41 @@
     render();
   }
 
+  function dateKey(d) {
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  // Returns Mon–Sun of the current week
+  function getWeekDays() {
+    const today = new Date();
+    const todayKey = dateKey(today);
+    // JS: 0=Sun,1=Mon...6=Sat → offset to Mon=0
+    const jsDay = today.getDay();
+    const daysSinceMon = jsDay === 0 ? 6 : jsDay - 1;
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - daysSinceMon);
+
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      const key = dateKey(d);
+      days.push({
+        key,
+        dayName: DAY_NAMES[i],
+        date: d.getDate(),
+        isToday: key === todayKey,
+        isFuture: d > today && key !== todayKey
+      });
+    }
+    return days;
+  }
+
   function render() {
-    const n       = prompts.length;
-    const energy  = prompts.reduce((s, p) => s + p.energy_wh, 0);
-    const co2     = prompts.reduce((s, p) => s + p.co2_g, 0);
-    const water   = prompts.reduce((s, p) => s + p.water_ml, 0);
+    const n      = prompts.length;
+    const energy = prompts.reduce((s, p) => s + p.energy_wh, 0);
+    const co2    = prompts.reduce((s, p) => s + p.co2_g, 0);
+    const water  = prompts.reduce((s, p) => s + p.water_ml, 0);
 
     // Gauge
     const arc  = document.getElementById('gauge-arc');
@@ -458,7 +541,6 @@
     arc.setAttribute('stroke-dashoffset', (circ * (1 - pct)).toFixed(2));
     const hue = Math.max(28, 155 - Math.round(pct * 127));
     arc.setAttribute('stroke', 'hsl(' + hue + ',58%,40%)');
-
     const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     document.getElementById('g-count').setAttribute('fill', dark ? '#EFF5F1' : '#182E22');
     document.getElementById('g-sub').setAttribute('fill',   dark ? '#6A8A72' : '#7A9A82');
@@ -468,28 +550,85 @@
     document.getElementById('co2-val').textContent    = co2.toFixed(2);
     document.getElementById('water-val').textContent  = water.toFixed(2);
 
-    const ledMin = Math.round(energy * 6);
-    const carM   = Math.round(co2 / 0.12);
-    const cups   = (water / 240).toFixed(3);
+    const ledMin  = Math.round(energy * 6);
+    const carFeet = Math.round(co2 / CO2_PER_FOOT);
+    const cups    = (water / 240).toFixed(3);
     document.getElementById('energy-ctx').textContent = 'LED bulb for ' + ledMin + ' min';
-    document.getElementById('co2-ctx').textContent    = '≈ ' + carM + 'm in a gas car';
+    document.getElementById('co2-ctx').textContent    = '≈ ' + carFeet + ' ft in a gas car';
     document.getElementById('water-ctx').textContent  = cups + ' cups of water';
 
-    // Log section
+    // 7-day chart — energy-based (Wh), not count-based
+    const days = getWeekDays();
+    const dayData = {};
+    days.forEach(d => {
+      dayData[d.key] = { simple: 0, moderate: 0, complex: 0, totalWh: 0, count: 0 };
+    });
+    prompts.forEach(p => {
+      if (dayData[p.date]) {
+        dayData[p.date][p.complexity] += p.energy_wh;
+        dayData[p.date].totalWh       += p.energy_wh;
+        dayData[p.date].count++;
+      }
+    });
+    // Bar heights scale to max daily Wh so one Complex prompt visually outweighs 10 Simple ones
+    const maxWh = Math.max(0.01, ...days.map(d => dayData[d.key].totalWh));
+
+    document.getElementById('chart-week-label').textContent =
+      'Week of ' + new Date(days[0].key).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+
+    const barsEl   = document.getElementById('chart-bars');
+    const labelsEl = document.getElementById('chart-labels');
+
+    barsEl.innerHTML = days.map(d => {
+      const dd      = dayData[d.key];
+      const totalWh = dd.totalWh;
+      const totalPx = Math.max(3, Math.round((totalWh / maxWh) * 80));
+
+      let stackHtml = '';
+      if (totalWh > 0) {
+        // Segments sized by energy contribution — complex visually dominates when present
+        ['complex','moderate','simple'].forEach(cx => {
+          const segWh = dd[cx];
+          const segPx = Math.round((segWh / totalWh) * totalPx);
+          if (segPx > 0) {
+            stackHtml += '<div class="seg seg-' + cx + '" style="height:' + segPx + 'px"></div>';
+          }
+        });
+      }
+
+      const stackClass = totalWh > 0 ? '' : (d.isFuture ? ' future' : ' empty');
+      return '<div class="chart-col">' +
+        '<div class="chart-count">' + (dd.count > 0 ? dd.count : '') + '</div>' +
+        '<div class="chart-bar-wrap">' +
+          '<div class="chart-stack' + stackClass + '" style="height:' + (totalWh > 0 ? totalPx : 3) + 'px">' +
+            stackHtml +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    labelsEl.innerHTML = days.map(d => {
+      const cls = d.isToday ? ' today' : d.isFuture ? ' future' : '';
+      return '<div class="chart-day-label' + cls + '">' + d.dayName + '<span>' + d.date + '</span></div>';
+    }).join('');
+
+    // Log entries
     const section = document.getElementById('log-section');
     const entries = document.getElementById('log-entries');
     if (n > 0) {
       section.style.display = 'block';
       const recent = [...prompts].reverse().slice(0, 7);
-      entries.innerHTML = recent.map(p =>
-        '<div class="log-entry">' +
+      entries.innerHTML = recent.map(p => {
+        const dotColor = BAR_COLORS[p.complexity] || '#ccc';
+        const cxLabel  = COMPLEXITY[p.complexity] ? COMPLEXITY[p.complexity].label : p.complexity;
+        return '<div class="log-entry">' +
+          '<div class="log-cx-dot" style="background:' + dotColor + '" title="' + cxLabel + '"></div>' +
           '<span class="log-time">' + p.time + '</span>' +
           '<span class="log-note" style="color:' + (p.note ? 'var(--text)' : 'var(--text3)') + '">' +
             escHtml(p.note || 'No reason noted') +
           '</span>' +
-          '<span class="log-cx">' + (COMPLEXITY[p.complexity] ? COMPLEXITY[p.complexity].label : p.complexity) + '</span>' +
-        '</div>'
-      ).join('');
+        '</div>';
+      }).join('');
       if (n > 7) {
         entries.innerHTML += '<div class="log-more">+ ' + (n - 7) + ' more saved in your browser</div>';
       }
